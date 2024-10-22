@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}">
+    <title>Home</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Dashboard</h1>
+    </header>
+    
+    <!-- Sidebar and menu -->
+    <div class="sidebar" id="sidebar">
+        <!-- Dynamically generated menu -->
+        {{ menu|safe }}
+    </div>
+
+    <!-- Main content area with a container and proper layout -->
+    <div class="main-content" id="main-content">
+        <div class="container">
+            <h2>Main Content Section</h2>
+            <p>This is where your content will appear.</p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+/* General styles */
+body {
+    font-family: 'Ubuntu', Arial, sans-serif;
+    background-color: #2E3440; /* Dark background */
+    color: #ECEFF4; /* Light text color */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-size: 14px; /* Reduced default font size */
+}
+
+/* Header */
+header {
+    width: 100%;
+    background-color: #3B4252;
+    padding: 15px; /* Reduced padding */
+    text-align: center;
+    color: #ECEFF4;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem; /* Reduced font size */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px; /* Matches theme */
+    height: 100vh;
+    background-color: #4C566A;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: 20px;
+    transition: width 0.3s ease;
+    overflow-y: auto; /* Added for consistency */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 8px 16px; /* Reduced padding */
+    margin: 8px 0;
+}
+
+.sidebar ul li a {
+    color: #ECEFF4;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem; /* Reduced font size */
+}
+
+.sidebar ul li a i {
+    margin-right: 8px; /* Adjusted spacing */
+}
+
+.sidebar ul li a:hover {
+    background-color: #3B4252;
+}
+
+.sidebar.collapsed {
+    width: 60px; /* Adjusted width for collapsed sidebar */
+}
+
+.sidebar.collapsed ul li a span {
+    display: none;
+}
+
+.sidebar.collapsed ul li a i {
+    margin-right: 0;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 240px; /* Adjusted to match sidebar width */
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.collapsed {
+    margin-left: 60px; /* Adjusted for collapsed sidebar */
+}
+
+/* Container */
+.container {
+    padding: 20px; /* Reduced padding */
+    background-color: #3B4252;
+    border-radius: 10px;
+    max-width: 1600px; /* Increased by 60% from 1000px */
+    margin: 20px auto 0; /* Centered container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Heading styles */
+h2 {
+    color: #ECEFF4;
+    font-size: 1.5em; /* Reduced font size */
+    margin-bottom: 15px; /* Adjusted margin */
+}
+
+/* Paragraph styles */
+p {
+    font-size: 14px; /* Reduced font size */
+    color: #ECEFF4;
+    margin-bottom: 15px;
+}
+
+/* Button and Dropdown Flexbox */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-header .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Spacing between elements */
+}
+
+.actions a {
+    padding: 5px 10px;
+    background-color: #81A1C1;
+    color: #ECEFF4;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.actions select {
+    padding: 5px 8px;
+    background-color: #4C566A;
+    color: #ECEFF4;
+    border: 1px solid #81A1C1;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+/* Form Dropdown Styling */
+.container form {
+    display: flex;
+    align-items: center;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ECEFF4;
+    font-size: 1em;
+}
+
+table td {
+    padding: 5px;
+    border-bottom: 1px solid #4C566A;
+    text-align: left;
+}
+
+table td:last-child {
+    text-align: right;
+    border-bottom: none;
+}
+
+/* Chart grid styling */
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+.chart-container {
+    width: 100%;
+    background-color: #3B4252;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s forwards;
+    /* Added to align content at the top */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 200px !important;
+}
+
+/* Power device container styling */
+.power-device-container {
+    width: 100%;
+    background-color: #3B4252;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s forwards;
+    margin-bottom: 20px; /* Spacing between power device containers */
+}
+
+.power-device-container h3 {
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    color: #ECEFF4;
+}
+
+/* Internal layout for power devices */
+.power-device-content {
+    display: flex;
+    flex-direction: row; /* Keep row layout */
+    flex-wrap: nowrap;
+    gap: 20px;
+    align-items: flex-start; /* Align items at the top */
+}
+
+.power-device-content > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.power-device-content .chart-container {
+    /* Inherits styles from .chart-container */
+}
+
+.power-device-content .chart-container.realtime-data {
+    margin-top: 20px; /* Adjust this value to move the table down */
+}
+
+/* Styles for headings inside chart-container */
+.chart-container h4 {
+    margin: 0 0 10px;
+    font-size: 1em;
+    color: #ECEFF4;
+}
+
+/* Table styles inside chart-container */
+.chart-container table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ECEFF4;
+    font-size: 1em;
+}
+
+.chart-container td {
+    padding: 5px;
+    border-bottom: 1px solid #4C566A;
+    text-align: left;
+}
+
+.chart-container td:last-child {
+    text-align: right;
+    border-bottom: none;
+}
+
+/* Adjusted styles for metrics inside realtime-data */
+.realtime-data .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr)); /* Set each metric to a max width of 15% */
+    gap: 8px; /* Reduced gap between metrics */
+}
+
+.realtime-data .metric-container {
+    padding: 6px; /* Further reduced padding */
+    min-height: 120px; /* Reduced height */
+    font-size: 0.8em; /* Reduced font size */
+    max-width: 80%; /* Set max width to 15% */
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+
+    .sidebar.collapsed {
+        width: 50px;
+    }
+
+    .main-content.collapsed {
+        margin-left: 50px;
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    /* Power device internal layout adjustment */
+    .power-device-content {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .sidebar {
+        width: 150px;
+    }
+
+    .main-content {
+        margin-left: 150px;
+    }
+
+    .sidebar.collapsed {
+        width: 40px;
+    }
+
+    .main-content.collapsed {
+        margin-left: 40px;
+    }
+
+    .container {
+        max-width: 90%;
+    }
+
+    .form-group select,
+    .form-group input,
+    button {
+        font-size: 12px; /* Reduced font size */
+    }
+
+    table td {
+        font-size: 12px; /* Reduced font size */
+        padding: 6px; /* Reduced padding */
+    }
+
+    /* Power device internal layout adjustment */
+    .power-device-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .realtime-data h4 {
+        font-size: 0.6em;
+    }
+
+    .realtime-data .metric-label {
+        font-size: 0.6em; /* Further reduced font size */
+    }
+
+    .realtime-data .metric-value {
+        font-size: 0.6em; /* Slight reduction */
+    }
+
+    .power-device-content > .realtime-data {
+        flex: 0 0 auto;
+        width: 40%;
+        max-width: 35%; /* Optional: set a max-width */
+    }
+
+    .realtime-data .metrics {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for 2x2 grid */
+        gap: 8px; /* Reduced gap between metrics */
+    }
+
+    .realtime-data .metric-container {
+        padding: 6px; /* Further reduced padding */
+        min-height: 75px; /* Reduced height */
+        font-size: 0.6em; /* Reduced font size */
+    }
+}

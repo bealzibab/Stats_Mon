@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  flask-app:
+    build: ./Flask_App
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - influxdb
+  
+  scraper:
+    build: ./Scraper
+    depends_on:
+      - postgres
+      - influxdb
+    restart: always  # Ensures scraper restarts if stopped
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: P@$$w0rd!@#
+      POSTGRES_DB: statsMon
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  influxdb:
+    image: influxdb:2.0
+    environment:
+      INFLUXDB_DB: statsMon
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: P@$$w0rd!@#
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+
+volumes:
+  postgres_data:
+  influxdb_data:

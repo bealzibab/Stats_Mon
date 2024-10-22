@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}">
+    <title>User Dashboard</title>
+    <!-- Include Chart.js and date adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+
+    <!-- Sidebar with toggle button -->
+    {{ menu|safe }}
+
+    <!-- Main content area with container -->
+    {{ containerContent|safe }}
+
+    <!-- Chart.js scripts for dynamic charts -->
+    {{ chartScripts|safe }}
+
+</body>
+</html>

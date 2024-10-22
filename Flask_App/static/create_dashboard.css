@@ -1,0 +1,388 @@
+/* General styles */
+body {
+    font-family: 'Ubuntu', Arial, sans-serif;
+    background-color: #2E3440;
+    color: #ECEFF4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #4C566A;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    transition: width 0.3s ease; /* Smooth transition */
+    overflow-y: auto;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 10px 20px;
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    color: #ECEFF4;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.sidebar ul li a i {
+    margin-right: 10px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #3B4252;
+}
+
+.sidebar .toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: -40px;
+    background-color: #4C566A;
+    color: #ECEFF4;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: right 0.3s ease; /* Smooth transition */
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .toggle-btn {
+    right: -40px;
+}
+
+.sidebar.collapsed ul li a span {
+    display: none;
+}
+
+.sidebar.collapsed ul li a i {
+    margin-right: 0;
+}
+
+/* Main content area */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    width: calc(100% - 250px);
+}
+
+.main-content.collapsed {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+}
+
+/* Container styling */
+.container {
+    padding: 30px;
+    background-color: #3B4252;
+    border-radius: 10px;
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-top: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #ECEFF4;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 16px;
+    color: #ECEFF4;
+    margin-bottom: 20px;
+}
+
+/* Form elements */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #ECEFF4;
+    display: block;
+}
+
+select.form-control,
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ECEFF4;
+    color: #2E3440;
+    border: 1px solid #4C566A;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+select.form-control:focus,
+button:hover {
+    border-color: #81A1C1;
+    outline: none;
+    background-color: #D8DEE9;
+    color: #2E3440;
+}
+
+/* Table styling */
+table.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+table.table th, 
+table.table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #4C566A;
+    background-color: #3B4252;
+    color: #ECEFF4;
+}
+
+table.table th {
+    background-color: #4C566A;
+}
+
+table.table tr:nth-child(even) {
+    background-color: #434C5E;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    .sidebar.collapsed {
+        width: 50px;
+    }
+
+    .main-content.collapsed {
+        margin-left: 50px;
+        width: calc(100% - 50px);
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    /* Adjust searchable dropdowns for medium screens */
+    .searchable-dropdown {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 150px;
+    }
+
+    .main-content {
+        margin-left: 150px;
+        width: calc(100% - 150px);
+    }
+
+    .sidebar.collapsed {
+        width: 40px;
+    }
+
+    .main-content.collapsed {
+        margin-left: 40px;
+        width: calc(100% - 40px);
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    select.form-control, 
+    button {
+        font-size: 14px;
+    }
+
+    table.table th,
+    table.table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* Adjust searchable dropdowns for small screens */
+    .searchable-dropdown {
+        font-size: 12px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 12px;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 12px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        font-size: 12px;
+    }
+}
+
+/* New Styles for Searchable Dropdowns */
+
+/* Common styles for searchable dropdowns */
+.searchable-dropdown {
+    width: 100%;
+    padding: 10px;
+    background-color: #ECEFF4;
+    color: #2E3440;
+    border: 1px solid #4C566A;
+    border-radius: 5px;
+    font-size: 16px;
+    appearance: none; /* Remove default arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%232E3440" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 6.646a.5.5 0 011 0L8 9.293l2.354-2.647a.5.5 0 11.708.708l-3 3.375a.5.5 0 01-.708 0l-3-3.375a.5.5 0 010-.708z"/></svg>') no-repeat right 10px center;
+    background-size: 16px 16px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Focus state */
+.searchable-dropdown:focus {
+    border-color: #81A1C1;
+    outline: none;
+    background-color: #D8DEE9;
+}
+
+/* Hover state */
+.searchable-dropdown:hover {
+    border-color: #81A1C1;
+}
+
+/* Styles specific to Select2 (if using Select2 library) */
+.select2-container .select2-selection--single {
+    height: 38px; /* Match the height of .form-control */
+    background-color: #ECEFF4;
+    border: 1px solid #4C566A;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #2E3440;
+    line-height: 38px; /* Align text vertically */
+    font-size: 16px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    right: 10px;
+}
+
+.select2-container--default .select2-results__option {
+    padding: 10px;
+    background-color: #3B4252;
+    color: #ECEFF4;
+    font-size: 16px;
+}
+
+.select2-container--default .select2-results__option--highlighted {
+    background-color: #4C566A;
+    color: #ECEFF4;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #ECEFF4;
+    color: #2E3440;
+    border: none;
+    border-bottom: 1px solid #4C566A;
+    font-size: 16px;
+}
+
+/* Ensure the dropdown menu appears above other elements */
+.select2-container--default .select2-dropdown {
+    background-color: #3B4252;
+    color: #ECEFF4;
+    border: 1px solid #4C566A;
+    border-radius: 5px;
+}
+
+/* Responsive adjustments for searchable dropdowns */
+@media (max-width: 768px) {
+    .searchable-dropdown {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .searchable-dropdown {
+        font-size: 12px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 12px;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 12px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        font-size: 12px;
+    }
+}
+
+/* Optional: Add arrow for custom dropdowns if not using a library */
+.searchable-dropdown::-ms-expand {
+    display: none;
+}

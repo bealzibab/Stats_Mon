@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create or Edit Dashboard</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS and FontAwesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='create_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}">
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Spectrum CSS for advanced color picker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css" />
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- SortableJS for drag-and-drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <!-- Spectrum JS for advanced color picker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
+
+    <style>
+        /* Custom styles */
+
+        /* Change the cursor to move when hovering over the table rows, except the delete button */
+        #resultsTable tr {
+            cursor: move;
+        }
+
+        /* Do not change cursor on delete button */
+        #resultsTable tr td:last-child {
+            cursor: default;
+        }
+
+        /* Optional: Add a visual indicator when dragging */
+        .sortable-chosen {
+            background-color: #f0f0f0;
+        }
+
+        .sortable-ghost {
+            opacity: 0.6;
+        }
+
+        /* Additional styling for the color picker table */
+        #colorSelection .table td {
+            vertical-align: middle;
+        }
+
+        /* Custom styling for the color selection section */
+        .color-selection-section {
+            background-color: transparent;
+            padding: 1rem;
+        }
+
+        /* Uniform button styles */
+        .btn-uniform {
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Ensure Select2 dropdowns have consistent width */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        /* Rotate arrow icon when collapsed/expanded */
+        .rotate {
+            transition: transform 0.3s;
+        }
+
+        .rotate.down {
+            transform: rotate(0deg);
+        }
+
+        .rotate.up {
+            transform: rotate(180deg);
+        }
+
+        /* Override Spectrum input background to match the page */
+        .sp-replacer {
+            background-color: transparent !important;
+            border: 1px solid #ced4da !important;
+            border-radius: 4px !important;
+            height: calc(1.5em + 0.75rem + 2px) !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 1rem !important;
+            line-height: 1.5 !important;
+            color: #495057 !important;
+        }
+
+        /* Remove white background from Spectrum color picker */
+        .sp-palette {
+            background-color: transparent !important;
+        }
+
+        /* Adjust padding for the color selection section */
+        .color-selection-section h5 {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar with dynamic menu -->
+    {{ menu|safe }}
+
+    <!-- Main content area -->
+    <main id="main-content" class="main-content">
+        <div class="container">
+            <h2>Create or Edit Your Dashboard</h2>
+            {% if not existing_config %}
+                <p>You currently do not have a user dashboard set up; this menu will help you set it up step by step.</p>
+            {% else %}
+                <p>You already have a dashboard configured. You can modify it below.</p>
+            {% endif %}
+
+            <!-- Dropdown for Power or Networking -->
+            <div class="form-group">
+                <label for="sectionSelect">Select Section:</label>
+                <select id="sectionSelect" class="form-control">
+                    <option value="power">Power</option>
+                    <option value="networking">Networking</option>
+                </select>
+            </div>
+
+            <!-- Content Area for Power Devices -->
+            <div id="powerContent" style="display: none;">
+                <div class="form-group">
+                    <label for="powerDeviceSelect">Select Power Device:</label>
+                    <select id="powerDeviceSelect" class="form-control"></select>
+                </div>
+            </div>
+
+            <!-- Content Area for Networking -->
+            <div id="networkingContent" style="display: none;">
+                <div class="form-group">
+                    <label for="categorySelect">Category:</label>
+                    <select id="categorySelect" class="form-control">
+                        <option value="queues">Queues</option>
+                        <option value="interfaces">Interfaces</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deviceSelect">Device:</label>
+                    <select id="deviceSelect" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label for="metricSelect">Metric:</label>
+                    <select id="metricSelect" class="form-control">
+                        <option value="Bandwidth">Bandwidth</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="targetSelect">Target (Queue/Interface):</label>
+                    <select id="targetSelect" class="form-control"></select>
+                </div>
+            </div>
+
+            <!-- Graph Type Selection (only for Networking) -->
+            <div class="form-group" id="graphTypeGroup" style="display: none;">
+                <label for="graphTypeSelect">Select Graph Type:</label>
+                <select id="graphTypeSelect" class="form-control">
+                    <option value="timeseries">Timeseries Graph</option>
+                    <option value="realtime">Real-time Counter</option>
+                </select>
+            </div>
+
+            <!-- Add Button -->
+            <div class="form-group">
+                <button id="addDeviceBtn" class="btn btn-primary btn-uniform" type="button">Add</button>
+            </div>
+
+            <!-- Table for Results -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Device</th>
+                        <th>Metric</th>
+                        <th>Target</th>
+                        <th>Graph Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTable">
+                    <!-- Pre-fill the table if an existing config is present -->
+                    {% if existing_config %}
+                        {% for entry in dashboard_entries %}
+                        <tr>
+                            <td>{{ entry.category }}</td>
+                            <td>{{ entry.device }}</td>
+                            <td>{{ entry.metric }}</td>
+                            <td>{{ entry.target }}</td>
+                            <td>{{ entry.graphType }}</td>
+                            <td><button class="btn btn-danger btn-sm btn-uniform delete-btn">Delete</button></td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <!-- Save Dashboard Button -->
+            <div class="form-group">
+                <button id="saveDashboardBtn" class="btn btn-success btn-uniform" type="button">Save Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Collapsible Color Selection Section -->
+        <div class="container mt-4">
+            <div class="form-group">
+                <button class="btn btn-info btn-uniform d-flex align-items-center" type="button" data-toggle="collapse" data-target="#colorSelection" aria-expanded="false" aria-controls="colorSelection">
+                    Select Colors for Metrics
+                    <i class="fas fa-chevron-down ml-2 rotate down"></i>
+                </button>
+            </div>
+
+            <div class="collapse" id="colorSelection">
+                <div class="color-selection-section">
+                    <h5>Select Colors for the Following Metrics:</h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><label for="voltageColor">Voltage Color:</label></td>
+                                <td><input type="text" id="voltageColor" name="voltageColor" value="#ff0000"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="chargeCurrentColor">Charge Current Color:</label></td>
+                                <td><input type="text" id="chargeCurrentColor" name="chargeCurrentColor" value="#00ff00"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="loadCurrentColor">Load Current Color:</label></td>
+                                <td><input type="text" id="loadCurrentColor" name="loadCurrentColor" value="#0000ff"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="rxUsageColor">RX Usage Color:</label></td>
+                                <td><input type="text" id="rxUsageColor" name="rxUsageColor" value="#ffa500"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="txUsageColor">TX Usage Color:</label></td>
+                                <td><input type="text" id="txUsageColor" name="txUsageColor" value="#800080"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Save Colors Button Inside the Collapsible Section -->
+                    <div class="form-group">
+                        <button id="saveColorsBtn" class="btn btn-success btn-uniform" type="button">Save Colors</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const addedEntries = {{ dashboard_entries | tojson | default('[]') }};
+
+        // Use event delegation to handle the delete button click
+        document.getElementById('resultsTable').addEventListener('click', function(event) {
+            if (event.target && event.target.classList.contains('delete-btn')) {
+                const row = event.target.closest('tr');
+                const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+
+                // Remove the entry from the addedEntries array
+                addedEntries.splice(rowIndex, 1);
+
+                // Remove the row from the table
+                row.remove();
+            }
+        });
+
+        // Enable drag-and-drop reordering for the results table
+        new Sortable(document.getElementById('resultsTable'), {
+            animation: 150,
+            handle: 'tr',
+            chosenClass: 'sortable-chosen',
+            ghostClass: 'sortable-ghost',
+            onEnd: function (evt) {
+                const oldIndex = evt.oldIndex;
+                const newIndex = evt.newIndex;
+
+                // Reorder the addedEntries array based on the new position
+                const movedItem = addedEntries.splice(oldIndex, 1)[0];
+                addedEntries.splice(newIndex, 0, movedItem);
+            }
+        });
+
+        // Show/hide content based on section selection
+        document.getElementById('sectionSelect').addEventListener('change', function() {
+            const networkingContent = document.getElementById('networkingContent');
+            const powerContent = document.getElementById('powerContent');
+            const graphTypeGroup = document.getElementById('graphTypeGroup');
+
+            if (this.value === 'networking') {
+                networkingContent.style.display = 'block';
+                powerContent.style.display = 'none';
+                graphTypeGroup.style.display = 'block';
+                loadRouters();  // Load routers for networking section
+            } else {
+                networkingContent.style.display = 'none';
+                powerContent.style.display = 'block';
+                graphTypeGroup.style.display = 'none';
+                loadPowerDevices();  // Load power devices for power section
+            }
+        });
+
+        // Initialize Select2 for searchable dropdown
+        function initializeSearchableDropdown(selector) {
+            $(selector).select2({
+                width: '100%',
+                allowClear: true,
+                placeholder: 'Select an option'
+            });
+        }
+
+        // Load power devices from the backend (/get-power-devices)
+        function loadPowerDevices() {
+            fetch('/get-power-devices')
+                .then(response => response.json())
+                .then(data => {
+                    const powerDeviceSelect = document.getElementById('powerDeviceSelect');
+                    powerDeviceSelect.innerHTML = '<option></option>';  // Clear previous options
+                    data.forEach(device => {
+                        const option = document.createElement('option');
+                        option.value = device;
+                        option.textContent = device;
+                        powerDeviceSelect.appendChild(option);
+                    });
+                    // Initialize Select2 for power devices
+                    initializeSearchableDropdown('#powerDeviceSelect');
+                });
+        }
+
+        // Load routers for networking section (/get-routers)
+        function loadRouters() {
+            fetch('/get-routers')
+                .then(response => response.json())
+                .then(data => {
+                    const deviceSelect = document.getElementById('deviceSelect');
+                    deviceSelect.innerHTML = '<option></option>';  // Clear previous options
+                    data.forEach(router => {
+                        const option = document.createElement('option');
+                        option.value = router;
+                        option.textContent = router;
+                        deviceSelect.appendChild(option);
+                    });
+                    // Initialize Select2 for device select
+                    initializeSearchableDropdown('#deviceSelect');
+                });
+        }
+
+        // Handle device and category change to populate targets (queue names or interfaces)
+        document.getElementById('deviceSelect').addEventListener('change', updateTargets);
+        document.getElementById('categorySelect').addEventListener('change', updateTargets);
+
+        function updateTargets() {
+            const device = document.getElementById('deviceSelect').value;
+            const category = document.getElementById('categorySelect').value;
+
+            if (device && category) {
+                const endpoint = category === 'queues' ? '/get-queue-names' : '/get-interface-names';
+
+                // Fetch the appropriate targets based on the selected category
+                fetch(`${endpoint}?router=${device}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const targetSelect = document.getElementById('targetSelect');
+                        targetSelect.innerHTML = '<option></option>';  // Clear previous options
+
+                        data.forEach(target => {
+                            const option = document.createElement('option');
+                            option.value = target;
+                            option.textContent = target;
+                            targetSelect.appendChild(option);
+                        });
+
+                        // Initialize Select2 for targets dropdown
+                        initializeSearchableDropdown('#targetSelect');
+                    });
+            }
+        }
+
+        // Add selected device, metric, and target to the table
+        document.getElementById('addDeviceBtn').addEventListener('click', function() {
+            const section = document.getElementById('sectionSelect').value;
+
+            let category, device, metric, target, graphType;
+            if (section === 'power') {
+                // Power section logic
+                category = 'Power';
+                device = document.getElementById('powerDeviceSelect').value;
+                metric = 'N/A'; // No metric for power devices
+                target = 'N/A';  // No target for power devices
+                graphType = 'N/A'; // No graph type for power devices
+            } else {
+                // Networking section logic
+                category = document.getElementById('categorySelect').value;
+                device = document.getElementById('deviceSelect').value;
+                metric = document.getElementById('metricSelect').value;
+                target = document.getElementById('targetSelect').value;
+                graphType = document.getElementById('graphTypeSelect').value;
+            }
+
+            // Ensure required fields are selected before adding
+            if (!device || (section === 'networking' && (!metric || !target || !graphType))) {
+                alert('Please fill in all fields before adding.');
+                return;
+            }
+
+            // Create a new row in the table
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${category}</td>
+                <td>${device}</td>
+                <td>${metric}</td>
+                <td>${target}</td>
+                <td>${graphType}</td>
+                <td><button class="btn btn-danger btn-sm btn-uniform delete-btn">Delete</button></td>
+            `;
+
+            // Add to the results table
+            document.getElementById('resultsTable').appendChild(newRow);
+
+            // Save the entry to the list of added entries
+            addedEntries.push({
+                category: category,
+                device: device,
+                metric: metric,
+                target: target,
+                graphType: graphType
+            });
+        });
+
+        // Handle save dashboard button click and send data to the backend
+        document.getElementById('saveDashboardBtn').addEventListener('click', function() {
+            if (addedEntries.length === 0) {
+                alert('Please add at least one device before saving.');
+                return;
+            }
+
+            // Send all entries as a single JSON array
+            fetch('/save-user-dashboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ devices: addedEntries })  // Send entire list in one JSON object
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Dashboard saved successfully!');
+                    // Optionally, redirect to the user dashboard page or another page
+                    window.location.href = '/user_dashboard';
+                } else {
+                    alert('Failed to save dashboard. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+
+        // Handle save colors button click
+        document.getElementById('saveColorsBtn').addEventListener('click', function() {
+            const colors = {
+                voltage: $('#voltageColor').spectrum("get").toHexString(),
+                chargeCurrent: $('#chargeCurrentColor').spectrum("get").toHexString(),
+                loadCurrent: $('#loadCurrentColor').spectrum("get").toHexString(),
+                rxUsage: $('#rxUsageColor').spectrum("get").toHexString(),
+                txUsage: $('#txUsageColor').spectrum("get").toHexString()
+            };
+
+            // Send the color data to the backend
+            fetch('/save-user-colours', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ colours: colors })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Colors saved successfully!');
+                } else {
+                    alert('Failed to save colors. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+
+        // Initialize Spectrum color picker on page load
+        $(document).ready(function() {
+            // Initialize Spectrum color picker on each input
+            function initializeSpectrum(selector) {
+                $(selector).spectrum({
+                    showInput: true,
+                    showPalette: true,
+                    showSelectionPalette: true,
+                    preferredFormat: "hex",
+                    allowEmpty: false,
+                    showAlpha: false,
+                    palette: [
+                        ['#ff0000', '#00ff00', '#0000ff', '#ffa500', '#800080'],
+                        ['#ffffff', '#000000', '#f8f9fa', '#343a40', '#6c757d']
+                    ]
+                });
+            }
+
+            initializeSpectrum('#voltageColor');
+            initializeSpectrum('#chargeCurrentColor');
+            initializeSpectrum('#loadCurrentColor');
+            initializeSpectrum('#rxUsageColor');
+            initializeSpectrum('#txUsageColor');
+
+            // Initialize Select2 for existing selects if any pre-filled options
+            initializeSearchableDropdown('#powerDeviceSelect');
+            initializeSearchableDropdown('#deviceSelect');
+            initializeSearchableDropdown('#targetSelect');
+
+            // Handle the rotation of the arrow icon on collapse/expand
+            $('#colorSelection').on('show.bs.collapse', function () {
+                $('.rotate').removeClass('down').addClass('up');
+            });
+
+            $('#colorSelection').on('hide.bs.collapse', function () {
+                $('.rotate').removeClass('up').addClass('down');
+            });
+
+            // Trigger the change event on page load to set the correct content area
+            document.getElementById('sectionSelect').dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>
